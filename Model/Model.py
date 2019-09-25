@@ -5,6 +5,7 @@ from tensorflow.keras.layers import Dense, GRU, Embedding
 from tensorflow.keras.optimizers import Adam
 
 import numpy as np
+import joblib
 import os
 
 
@@ -39,11 +40,17 @@ class GRU(object):
                                  output_dim=self.embedding_size,
                                  input_length=self.max_tokens,
                                  name='Embedding Layer'))
-        self.model.add(GRU(units=64, name='GRU Layer'))
-        self.model.add(Dense(len(self.list_label), activation='softmax', name='Output layer'))
-        self.model.compile(loss='binary_crossentropy', optimizer=Adam(lr=0.001), metrics=['accuracy'])
+        self.model.add(GRU(units=64,
+                           name='GRU Layer'))
+        self.model.add(Dense(len(self.list_label),
+                             activation='softmax',
+                             name='Output layer'))
+        self.model.compile(loss='binary_crossentropy',
+                           optimizer=Adam(lr=0.001),
+                           metrics=['accuracy'])
         if self.summary:
             print(self.model.summary())
+
         self.model.fit(self.x_train_tokens,
                        self.y_train,
                        epochs=self.epoch,
@@ -72,8 +79,9 @@ class GRU(object):
 
         self.model_gru()
 
-    def save_model(self, filename='model'):
+    def save_model(self, model, filename='model'):
         model_json = self.model.to_json()
         with open(os.path.join(os.getcwd(), 'Model/Output_model/{}.json'.format(filename)), 'w') as json_file:
             json_file.write(model_json)
         self.model.save_weights(os.path.join(os.getcwd(), 'Model/Output_model/{}.h5'.format(filename)))
+        joblib.dump(model, os.path.join(os.getcwd(), 'Model/Output_model/{}.joblib'.format(filename)))
