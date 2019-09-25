@@ -9,7 +9,7 @@ import joblib
 import os
 
 
-class GRU(object):
+class GatedRecurrentUnit(object):
 
     def __init__(self, max_tokens=5000, embedding_size=8, num_words=10000, model=None, tokenizer=None):
         self.x_train = []
@@ -39,12 +39,11 @@ class GRU(object):
         self.model.add(Embedding(input_dim=self.num_words,
                                  output_dim=self.embedding_size,
                                  input_length=self.max_tokens,
-                                 name='Embedding Layer'))
-        self.model.add(GRU(units=64,
-                           name='GRU Layer'))
+                                 name='Embedding_Layer'))
+        self.model.add(GRU(units=64))
         self.model.add(Dense(len(self.list_label),
                              activation='softmax',
-                             name='Output layer'))
+                             name='Output_layer'))
         self.model.compile(loss='binary_crossentropy',
                            optimizer=Adam(lr=0.001),
                            metrics=['accuracy'])
@@ -74,8 +73,9 @@ class GRU(object):
                                             maxlen=self.max_tokens,
                                             padding='pre',
                                             truncating='pre')
-        if type(self.y_train[0]) == str or type(self.y_train[0]) == int:
-            self.y_train = np.array(self.one_hot_encoder(y_train))
+
+        # if type(self.y_train[0]) == str or type(self.y_train[0]) == int:
+        self.y_train = np.array(self.one_hot_encoder(y_train))
 
         self.model_gru()
 
