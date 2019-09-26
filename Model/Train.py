@@ -21,5 +21,3 @@ for i in range(len(text)):
 model = GatedRecurrentUnit(embedding_size=8, max_tokens=10)
 model.fit(x_train, y_train, epoch=1)
 model.save_model()
-# joblib.dump(model, os.path.join(os.getcwd(), 'Model/Output_model/{}.joblib'.format('model')))
-joblib.dump(model.tokenizer, 'Model/Output_model/model.joblib')

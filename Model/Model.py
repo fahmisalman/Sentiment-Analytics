@@ -1,6 +1,6 @@
 from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
-from tensorflow.keras.models import Sequential
+from tensorflow.keras.models import Sequential, model_from_json
 from tensorflow.keras.layers import Dense, GRU, Embedding
 from tensorflow.keras.optimizers import Adam
 
@@ -84,5 +84,27 @@ class GatedRecurrentUnit(object):
         with open(os.path.join(os.getcwd(), 'Model/Output_model/{}.json'.format(filename)), 'w') as json_file:
             json_file.write(model_json)
         self.model.save_weights(os.path.join(os.getcwd(), 'Model/Output_model/{}.h5'.format(filename)))
-        joblib.dump(self.tokenizer, os.path.join(os.getcwd(), 'Model/Output_model/{}_tokenizer.joblib'.format(filename)))
-        joblib.dump(self.list_label, os.path.join(os.getcwd(), 'Model/Output_model/{}_list_label.joblib'.format(filename)))
+        joblib.dump(self.tokenizer, os.path.join(os.getcwd(),
+                                                 'Model/Output_model/{}_tokenizer.joblib'.format(filename)))
+        joblib.dump(self.list_label, os.path.join(os.getcwd(),
+                                                  'Model/Output_model/{}_list_label.joblib'.format(filename)))
+
+    def load_model(self, filename='model'):
+        json_file = open(os.path.join(os.getcwd(), 'Model/Output_model/{}.json'.format(filename)), 'r')
+        loaded_model_json = json_file.read()
+        json_file.close()
+        self.model = model_from_json(loaded_model_json)
+        self.model.load_weights(os.path.join(os.getcwd(), 'Model/Output_model/{}.h5'.format(filename)))
+        self.tokenizer = joblib.load(os.path.join(os.getcwd(),
+                                                  'Model/Output_model/{}_tokenizer.joblib'.format(filename)))
+        self.list_label = joblib.load(os.path.join(os.getcwd(),
+                                                   'Model/Output_model/{}_list_label.joblib'.format(filename)))
+        self.model.compile(loss='binary_crossentropy',
+                           optimizer=Adam(lr=0.001),
+                           metrics=['accuracy'])
+
+    def predict(self, x):
+        return self.model.predict(x)
+
+    def score(self, x_test, y_test):
+        return self.model.evaluate(x_test, y_test)
