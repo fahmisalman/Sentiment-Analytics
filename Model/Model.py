@@ -40,7 +40,7 @@ class GatedRecurrentUnit(object):
                                  output_dim=self.embedding_size,
                                  input_length=self.max_tokens,
                                  name='Embedding_Layer'))
-        self.model.add(GRU(units=64))
+        self.model.add(GRU(units=4))
         self.model.add(Dense(len(self.list_label),
                              activation='softmax',
                              name='Output_layer'))
@@ -79,9 +79,10 @@ class GatedRecurrentUnit(object):
 
         self.model_gru()
 
-    def save_model(self, model, filename='model'):
+    def save_model(self, filename='model'):
         model_json = self.model.to_json()
         with open(os.path.join(os.getcwd(), 'Model/Output_model/{}.json'.format(filename)), 'w') as json_file:
             json_file.write(model_json)
         self.model.save_weights(os.path.join(os.getcwd(), 'Model/Output_model/{}.h5'.format(filename)))
-        joblib.dump(model, os.path.join(os.getcwd(), 'Model/Output_model/{}.joblib'.format(filename)))
+        joblib.dump(self.tokenizer, os.path.join(os.getcwd(), 'Model/Output_model/{}_tokenizer.joblib'.format(filename)))
+        joblib.dump(self.list_label, os.path.join(os.getcwd(), 'Model/Output_model/{}_list_label.joblib'.format(filename)))

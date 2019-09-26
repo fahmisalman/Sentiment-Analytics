@@ -2,6 +2,7 @@ from Model.Preprocessing import preprocessing
 from Model.Model import GatedRecurrentUnit
 
 import pandas as pd
+import joblib
 import os
 
 
@@ -17,6 +18,8 @@ for i in range(len(text)):
     x_train.append(preprocessing(text[i]))
     y_train.append(sentiment[i])
 
-model = GatedRecurrentUnit()
-model.fit(x_train, y_train)
-model.save_model(model.model)
+model = GatedRecurrentUnit(embedding_size=8, max_tokens=10)
+model.fit(x_train, y_train, epoch=1)
+model.save_model()
+# joblib.dump(model, os.path.join(os.getcwd(), 'Model/Output_model/{}.joblib'.format('model')))
+joblib.dump(model.tokenizer, 'Model/Output_model/model.joblib')
