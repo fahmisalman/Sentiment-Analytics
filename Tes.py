@@ -92,5 +92,16 @@
 # # serialize weights to HDF5
 # model.save_weights("model.h5")
 # print("Saved model to disk")
+# from Model import Train
+from Model import Model
 
-from Model import Train
+model = Model.GatedRecurrentUnit()
+model.load_model()
+
+sent = 'lagu bosan apa yang aku save ni huhuhuhuhuhuhuhuhuhuuuuuuuuuuuuuu'
+print(sent)
+sent = model.text_to_seq(sent)
+print(sent)
+print(model.predict(sent))
+print(model.predict_classes(sent))
+

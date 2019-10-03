@@ -21,3 +21,6 @@ for i in range(len(text)):
 model = GatedRecurrentUnit(embedding_size=8, max_tokens=10)
 model.fit(x_train, y_train, epoch=1)
 model.save_model()
+# model.load_model()
+# print(model.max_tokens)
+# print(model.tokenizer)

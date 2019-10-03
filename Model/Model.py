@@ -56,6 +56,15 @@ class GatedRecurrentUnit(object):
                        validation_split=self.validation_split,
                        verbose=self.verbose)
 
+    def text_to_seq(self, x):
+        # return self.tokenizer.fit_on_texts(x)
+        temp = self.tokenizer.texts_to_sequences([x])
+        print(temp)
+        return pad_sequences(temp,
+                             maxlen=self.max_tokens,
+                             padding='pre',
+                             truncating='pre')
+
     def fit(self, x_train, y_train, epoch=5, validation_split=0.1, verbose=1):
 
         self.x_train = x_train
@@ -88,6 +97,8 @@ class GatedRecurrentUnit(object):
                                                  'Model/Output_model/{}_tokenizer.joblib'.format(filename)))
         joblib.dump(self.list_label, os.path.join(os.getcwd(),
                                                   'Model/Output_model/{}_list_label.joblib'.format(filename)))
+        joblib.dump(self.max_tokens, os.path.join(os.getcwd(),
+                                                  'Model/Output_model/{}_max_tokens.joblib'.format(filename)))
 
     def load_model(self, filename='model'):
         json_file = open(os.path.join(os.getcwd(), 'Model/Output_model/{}.json'.format(filename)), 'r')
@@ -99,12 +110,17 @@ class GatedRecurrentUnit(object):
                                                   'Model/Output_model/{}_tokenizer.joblib'.format(filename)))
         self.list_label = joblib.load(os.path.join(os.getcwd(),
                                                    'Model/Output_model/{}_list_label.joblib'.format(filename)))
+        self.max_tokens = joblib.load(os.path.join(os.getcwd(),
+                                                   'Model/Output_model/{}_max_tokens.joblib'.format(filename)))
         self.model.compile(loss='binary_crossentropy',
                            optimizer=Adam(lr=0.001),
                            metrics=['accuracy'])
 
     def predict(self, x):
         return self.model.predict(x)
+
+    def predict_classes(self, x):
+        return self.model.predict_classes(x)
 
     def score(self, x_test, y_test):
         return self.model.evaluate(x_test, y_test)
