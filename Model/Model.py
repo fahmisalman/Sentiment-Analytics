@@ -57,9 +57,7 @@ class GatedRecurrentUnit(object):
                        verbose=self.verbose)
 
     def text_to_seq(self, x):
-        # return self.tokenizer.fit_on_texts(x)
         temp = self.tokenizer.texts_to_sequences([x])
-        print(temp)
         return pad_sequences(temp,
                              maxlen=self.max_tokens,
                              padding='pre',

@@ -98,8 +98,7 @@ from Model import Model
 model = Model.GatedRecurrentUnit()
 model.load_model()
 
-sent = 'lagu bosan apa yang aku save ni huhuhuhuhuhuhuhuhuhuuuuuuuuuuuuuu'
-print(sent)
+sent = 'nampak la org lain semua dp gambar kawen dengan husband aku je dp gambar ambik sendiri'
 sent = model.text_to_seq(sent)
 print(sent)
 print(model.predict(sent))
